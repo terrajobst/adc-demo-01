@@ -7,18 +7,18 @@ namespace Northwind
     {
         public static string GetData()
         {
-            var result = "";
-            var dataSet = new DataSet();
+            string result = "";
+            DataSet dataSet = new DataSet();
             dataSet.ReadXml(@"P:\fringe\northwind.xml");
 
-            var employeeTable = dataSet.Tables["Employees"];
+            DataTable employeeTable = dataSet.Tables["Employees"];
 
             foreach (DataRow row in employeeTable.Rows)
             {
-                var firstName = Convert.ToString(row["FirstName"]);
-                var lastName = Convert.ToString(row["LastName"]);
-                var birthdate = Convert.ToDateTime(row["Birthdate"]);
-                var retirementDate = birthdate.AddYears(65);
+                string firstName = Convert.ToString(row["FirstName"]);
+                string lastName = Convert.ToString(row["LastName"]);
+                DateTime birthdate = Convert.ToDateTime(row["Birthdate"]);
+                DateTime retirementDate = birthdate.AddYears(65);
 
                 var isRetired = retirementDate < DateTime.Now;
                 if (!isRetired)
