@@ -9,7 +9,7 @@ namespace Northwind
         {
             string result = "";
             DataSet dataSet = new DataSet();
-            dataSet.ReadXml(@"P:\fringe\northwind.xml");
+            dataSet.ReadXml(@"c:\demos\northwind.xml");
 
             DataTable employeeTable = dataSet.Tables["Employees"];
 
