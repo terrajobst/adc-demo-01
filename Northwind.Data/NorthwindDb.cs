@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Data;
+using System.Linq;
+using NQuery;
 
 namespace Northwind
 {
@@ -11,21 +13,19 @@ namespace Northwind
             var dataSet = new DataSet();
             dataSet.ReadXml(@"C:\demos\northwind.xml");
 
-            var employeeTable = dataSet.Tables["Employees"];
+            var dataContext = new DataContext();
+            dataContext.AddTablesAndRelations(dataSet);
 
-            foreach (DataRow row in employeeTable.Rows)
-            {
-                var firstName = Convert.ToString(row["FirstName"]);
-                var lastName = Convert.ToString(row["LastName"]);
-                var birthdate = Convert.ToDateTime(row["Birthdate"]);
-                var retirementDate = birthdate.AddYears(65);
+            var sql = @"
+                SELECT  e.FirstName + ' ' + e.LastName
+                FROM    Employees e
+                WHERE   e.Birthdate.AddYears(65) < GETDATE()
+            ";
 
-                var isRetired = retirementDate < DateTime.Now;
-                if (!isRetired)
-                    continue;
-
-                result += $"{firstName} {lastName}: {retirementDate}\r\n";
-            }
+            var query = new Query(sql, dataContext);
+            var results = query.ExecuteDataTable();
+            var values = results.Rows.Cast<DataRow>().Select(r => (string)r[0]);
+            result = string.Join(Environment.NewLine, values);
 
             return result;
         }
